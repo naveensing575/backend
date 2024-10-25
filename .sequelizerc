@@ -1,8 +1,9 @@
-import path from 'path';
+import path from "path";
 
-export default {
-  config: path.resolve('src', 'config', 'database.ts'),
-  'models-path': path.resolve('src', 'models'),
-  'migrations-path': path.resolve('src', 'migrations'),
-  'seeders-path': path.resolve('src', 'seeders'),
+module.exports = {
+  config: path.resolve("src", "config", "database.ts"),
+  "models-path": path.resolve("src", "models"),
+  "migrations-path": path.resolve("src", "migrations"),
+  "seeders-path": path.resolve("src", "seeders"),
+  migrationStoragePath: path.resolve("src", "migrations"),
 };
