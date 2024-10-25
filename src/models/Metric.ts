@@ -6,9 +6,6 @@ class Metric extends Model {
   public id!: number;
   public name!: string;
   public value!: number;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 }
 
 Metric.init(
