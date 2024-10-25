@@ -1,10 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "src/index.ts",
+  "main": "src/server.js",
   "scripts": {
-    "start": "tsc && node dist/src/index.ts",
-    "dev": "nodemon ts-node src/index.ts"
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js",
+    "dev": "nodemon --watch src -e ts --exec ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",

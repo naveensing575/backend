@@ -1,81 +1,57 @@
 // src/controllers/userController.ts
-import { NextFunction, Request, Response } from "express";
-import * as userService from "../services/userService";
+import { Request, Response } from "express";
+import userService from "../services/userService";
 
-// Create a new user
-export const createUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const newUser = await userService.createUser(req.body);
-    return res.status(201).json(newUser);
-  } catch (error) {
-    return next(error);
-  }
-};
-
-// Get a user by ID
-export const getUserById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<Response | void> => {
-  try {
-    const user = await userService.getUserById(Number(req.params.id));
-    if (!user) {
-      const error: Error & { status?: number } = new Error("User not found");
-      error.status = 404;
-      return next(error);
+class UserController {
+  async createUser(req: Request, res: Response) {
+    try {
+      const user = await userService.createUser(req.body);
+      res.status(201).json(user);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
-    return res.json(user);
-  } catch (error) {
-    return next(error);
   }
-};
 
-// Get all users
-export const getAllUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const users = await userService.getAllUsers();
-    return res.json(users);
-  } catch (error) {
-    return next(error);
-  }
-};
+  async getUserById(req: Request, res: Response) {
+    try {
+      const user = await userService.getUserById(parseInt(req.params.id));
+      if (!user) return res.status(404).json({ error: "User not found" });
 
-// Update a user
-export const updateUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const updatedUser = await userService.updateUser(
-      Number(req.params.id),
-      req.body
-    );
-    return res.json(updatedUser);
-  } catch (error) {
-    return next(error);
+      res.json(user);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
   }
-};
 
-// Delete a user
-export const deleteUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    await userService.deleteUser(Number(req.params.id));
-    return res.status(204).send();
-  } catch (error) {
-    return next(error);
+  async getAllUsers(req: Request, res: Response) {
+    try {
+      const users = await userService.getAllUsers();
+      res.json(users);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
   }
-};
+
+  async updateUser(req: Request, res: Response) {
+    try {
+      const user = await userService.updateUser(
+        parseInt(req.params.id),
+        req.body
+      );
+      res.json(user);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async deleteUser(req: Request, res: Response) {
+    try {
+      await userService.deleteUser(parseInt(req.params.id));
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+}
+
+export default new UserController();

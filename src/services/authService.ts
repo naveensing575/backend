@@ -1,29 +1,35 @@
 // src/services/authService.ts
-import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import User from "../models/User";
 
-const JWT_SECRET = process.env.JWT_SECRET ?? "your_jwt_secret";
+const JWT_SECRET = process.env.JWT_SECRET ?? "default_secret";
 
-export const registerUser = async (
-  name: string,
-  email: string,
-  password: string,
-  roleId: number
-) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  return await User.create({ name, email, password: hashedPassword, roleId });
-};
+class AuthService {
+  async register(data: {
+    name: string;
+    email: string;
+    password: string;
+    roleId: number;
+  }) {
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    return await User.create({ ...data, password: hashedPassword });
+  }
 
-export const loginUser = async (email: string, password: string) => {
-  const user = await User.findOne({ where: { email } });
-  if (!user) throw new Error("User not found");
+  async login(email: string, password: string) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) throw new Error("Invalid email or password");
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) throw new Error("Invalid credentials");
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) throw new Error("Invalid email or password");
 
-  const token = jwt.sign({ id: user.id, roleId: user.roleId }, JWT_SECRET, {
-    expiresIn: "1h",
-  });
-  return { token, user };
-};
+    const token = jwt.sign(
+      { userId: user.id, roleId: user.roleId },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    return { user, token };
+  }
+}
+
+export default new AuthService();

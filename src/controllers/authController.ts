@@ -1,33 +1,26 @@
 // src/controllers/authController.ts
-import { Request, Response, NextFunction } from "express";
-import * as authService from "../services/authService";
+import { Request, Response } from "express";
+import authService from "../services/authService";
 
-export const register = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { name, email, password, roleId } = req.body;
-    const user = await authService.registerUser(name, email, password, roleId);
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", user });
-  } catch (error) {
-    return next(error);
+class AuthController {
+  async register(req: Request, res: Response) {
+    try {
+      const user = await authService.register(req.body);
+      res.status(201).json(user);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
   }
-};
 
-export const login = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { email, password } = req.body;
-    const { token, user } = await authService.loginUser(email, password);
-    return res.json({ message: "Login successful", token, user });
-  } catch (error) {
-    return next(error);
+  async login(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+      const { user, token } = await authService.login(email, password);
+      res.json({ user, token });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
   }
-};
+}
+
+export default new AuthController();

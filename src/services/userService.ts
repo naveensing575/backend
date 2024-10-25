@@ -1,34 +1,47 @@
 // src/services/userService.ts
 import User from "../models/User";
 
-export const createUser = async (userData: {
-  name: string;
-  email: string;
-  password: string;
-  roleId: number;
-}) => {
-  return await User.create(userData);
-};
+class UserService {
+  async createUser(data: {
+    name: string;
+    email: string;
+    password: string;
+    roleId: number;
+  }) {
+    return await User.create(data);
+  }
 
-export const getUserById = async (id: number) => {
-  return await User.findByPk(id);
-};
+  async getUserById(id: number) {
+    return await User.findByPk(id);
+  }
 
-export const getAllUsers = async () => {
-  return await User.findAll();
-};
+  async getAllUsers() {
+    return await User.findAll();
+  }
 
-export const updateUser = async (
-  id: number,
-  updateData: Partial<{ name: string; email: string; password: string }>
-) => {
-  const user = await User.findByPk(id);
-  if (!user) throw new Error("User not found");
-  return await user.update(updateData);
-};
+  async updateUser(
+    id: number,
+    data: Partial<{
+      name: string;
+      email: string;
+      password: string;
+      roleId: number;
+    }>
+  ) {
+    const user = await User.findByPk(id);
+    if (!user) throw new Error("User not found");
 
-export const deleteUser = async (id: number) => {
-  const user = await User.findByPk(id);
-  if (!user) throw new Error("User not found");
-  return await user.destroy();
-};
+    await user.update(data);
+    return user;
+  }
+
+  async deleteUser(id: number) {
+    const user = await User.findByPk(id);
+    if (!user) throw new Error("User not found");
+
+    await user.destroy();
+    return user;
+  }
+}
+
+export default new UserService();
