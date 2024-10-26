@@ -1,5 +1,6 @@
 // src/services/uploadService.ts
 import Upload from "../models/Upload";
+import DataRecord from "../models/DataRecord";
 
 class UploadService {
   async createUpload(data: {
@@ -21,6 +22,11 @@ class UploadService {
     upload.status = status;
     await upload.save();
     return upload;
+  }
+
+  // Save parsed data records to the database
+  async saveDataRecords(dataRecords: any[]) {
+    return await DataRecord.bulkCreate(dataRecords);
   }
 }
 

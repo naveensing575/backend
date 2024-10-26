@@ -1,5 +1,5 @@
 // src/services/dataRecordService.ts
-import DataRecord from "../models/DataRecord ";
+import DataRecord from "../models/DataRecord";
 
 class DataRecordService {
   async getAllDataRecords(filter: any) {
