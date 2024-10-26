@@ -22,9 +22,9 @@ app.use(express.json());
 
 app.use("/auth", authRoutes);
 app.use("/users", authenticateToken, userRoutes);
-app.use("/roles", roleRoutes);
-app.use("/data-records", dataRecordRoutes);
-app.use("/metrics", metricRoutes);
+app.use("/roles", authenticateToken, roleRoutes);
+app.use("/data-records", authenticateToken, dataRecordRoutes);
+app.use("/metrics", authenticateToken, metricRoutes);
 app.use("/uploads", authenticateToken, uploadRoutes);
 
 export default app;

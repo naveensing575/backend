@@ -1,10 +1,9 @@
-// src/routes/metricRoutes.ts
 import { Router } from "express";
 import metricController from "../controllers/metricController";
-import { authenticateToken } from "../middlewares/authMiddleware";
 
 const router = Router();
 
-router.get("/", authenticateToken, metricController.getAllMetrics);
+// Route to fetch all metrics
+router.get("/", metricController.getAllMetrics);
 
 export default router;
