@@ -1,6 +1,6 @@
 // src/app.ts
 import express from "express";
-import cors from "cors"; // Import the CORS package
+import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import userRoutes from "./routes/userRoutes";
 import roleRoutes from "./routes/roleRoutes";
