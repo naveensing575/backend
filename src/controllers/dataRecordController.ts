@@ -5,7 +5,11 @@ import dataRecordService from "../services/dataRecordService";
 class DataRecordController {
   async getAllDataRecords(req: Request, res: Response) {
     try {
-      const records = await dataRecordService.getAllDataRecords(req.query);
+      const filter = {
+        date: req.query.date as string | undefined,
+        location: req.query.location as string | undefined,
+      };
+      const records = await dataRecordService.getAllDataRecords(filter);
       res.json(records);
     } catch (error: any) {
       res.status(400).json({ error: error.message });
