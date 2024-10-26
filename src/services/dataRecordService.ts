@@ -3,7 +3,13 @@ import DataRecord from "../models/DataRecord";
 import { Op } from "sequelize";
 
 class DataRecordService {
-  async getAllDataRecords(filter: { date?: string; location?: string }) {
+  async getAllDataRecords(
+    filter: { date?: string; location?: string },
+    page: number = 1,
+    limit: number = 10,
+    sortColumn: string = "id", // Default sorting by 'id'
+    sortDirection: "asc" | "desc" = "asc"
+  ) {
     const whereClause: any = {};
 
     // Apply date filtering if provided
@@ -19,7 +25,19 @@ class DataRecordService {
       whereClause.location = filter.location;
     }
 
-    return await DataRecord.findAll({ where: whereClause });
+    const offset = (page - 1) * limit;
+
+    const { rows: dataRecords, count: totalRecords } =
+      await DataRecord.findAndCountAll({
+        where: whereClause,
+        offset,
+        limit,
+        order: [[sortColumn, sortDirection]], // Sort by specified column and direction
+      });
+
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    return { dataRecords, totalRecords, totalPages, currentPage: page };
   }
 }
 
